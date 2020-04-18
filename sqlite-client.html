@@ -1,0 +1,123 @@
+<html>
+
+<head>
+
+    <script>
+        function getSelection() {
+            return (!!document.getSelection) ? document.getSelection() :
+                (!!window.getSelection) ? window.getSelection() :
+                    document.selection.createRange().text;
+        }
+
+        function toHtmlTable(rows) {
+            if (rows.length == 0)
+                return ''
+
+            else {
+                let ret = '<tr>'
+                for (let heading of Object.keys(rows[0]))
+                    ret += '<th>' + heading + '</th>'
+                ret += '</tr>'
+
+                for (let row of rows) {
+                    ret += '<tr>'
+                    for (let column of Object.values(row))
+                        ret += '<td>' + column + '</td>'
+                    ret += '</tr>'
+                }
+                return ret;
+            }
+        }
+
+        function run() {
+            const data = new FormData()
+            data.append('command', (getSelection()!='') ? getSelection() : document.getElementById('command').value)
+
+            const xhr = new XMLHttpRequest()
+            xhr.open('POST', 'http://127.0.0.1:3000/', true)
+
+            xhr.onreadystatechange = () => {
+                if (xhr.readyState == XMLHttpRequest.DONE) {
+                    if (xhr.status == 200) {
+                        try {
+                            document.getElementById('result').innerHTML = toHtmlTable(JSON.parse(xhr.responseText))
+                            document.getElementById('error').innerHTML = ''
+                        }
+                        catch (err) {
+                            document.getElementById('error').innerHTML = xhr.responseText
+                            document.getElementById('result').innerHTML = ''
+                        }
+                    }
+                    else {
+                        window.alert('Check if the server is running')
+                    }
+                }
+            }
+            xhr.send(data)
+        }
+    </script>
+
+    <style>
+        textarea {
+            font-size: 16px;
+            height: 300px;
+            width: 800px;
+        }
+
+        .heading {
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+        button {
+            background-color: blue;
+            color: white;
+            font-size: 20px;
+            margin-left: 505px;
+            height: 30px;
+            width: 60px;
+        }
+
+        table,
+        td,
+        th {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+
+        table {
+            font-size: 20px;
+        }
+
+        td,
+        th {
+            text-align: center;
+            width: 60px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #c3ff00;
+        }
+
+        tr:nth-child(odd) {
+            background-color: #ffc400;
+        }
+
+        .error {
+            font-size: 18px
+        }
+    </style>
+
+</head>
+
+<body>
+    <span class="heading">Run sqlite in browser</span>
+    <button onclick="run()">Run</button>
+    <br>
+    <textarea id="command"></textarea>
+    <br><br>
+    <table id="result"></table>
+    <p id="error" class="error"></p>
+</body>
+
+</html>
