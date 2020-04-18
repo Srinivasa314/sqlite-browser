@@ -4,9 +4,10 @@
 
     <script>
         function getSelection() {
-            return (!!document.getSelection) ? document.getSelection() :
-                (!!window.getSelection) ? window.getSelection() :
-                    document.selection.createRange().text;
+        	let field = document.getElementById('command');
+        	const startPos = field.selectionStart; 
+        	const endPos = field.selectionEnd;          
+        	return field.value.substring(startPos,endPos); 
         }
 
         function toHtmlTable(rows) {
