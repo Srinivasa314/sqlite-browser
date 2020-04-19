@@ -1,5 +1,5 @@
-# sqlite-browser
-sqlite-browser is a cross platform application that can be used to practice SQL commands in a browser
+# Sqlite Browser (Run sqlite in a browser)
+sqlite-browser is a cross platform application that can be used to run SQL commands in a browser
 
 ## Installation
 Node.js and npm must be installed for this application.
